@@ -17,6 +17,7 @@ void test_create_new_model()
 {
     system_model_t *model = new_system_model("MacBook Air", "Apple", "ARM-M3", 8, 4.05, 24.0, 256.0, "MacOS 15");
     printf("%s, %s %f Ghz, %f GB \n", model->systemVendor, model->systemName, model->clockSpeedGHZ, model->memoryCapacityGB);
+    munit_assert_false(model == NULL);
     free(model);
 }
 
