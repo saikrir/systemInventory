@@ -1,17 +1,24 @@
 # Compiler
-CC = gcc
+CC = clang
 
 # Compiler flags
-CFLAGS = -Wall -g -Iinclude
+CFLAGS = -Wall -g -std=c23 -Iinclude 
 
 # Source files
-SRC = src/main.c src/munit.c
+
+COMMON_SRC = src/common.c src/sysmodel.c
+
+MAIN_SRC = $(COMMON_SRC) src/main.c
+
+TEST_SRC = $(COMMON_SRC) src/munit.c src/tests.c
+
 
 # Object files
-OBJ = $(SRC:.c=.o)
+OBJ = $(MAIN_SRC:.c=.o)
 
 # The output executable
 TARGET = bin/sysinv
+TEST_TARGET = bin/tests
 
 # Default target
 all: $(TARGET)
@@ -26,7 +33,12 @@ $(TARGET): $(OBJ)
 
 # Clean up build files
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f $(OBJ) $(TARGET) $(TEST_TARGET)
+	rm -rf bin/*.dSYM
+
+test:
+	$(CC) $(CFLAGS) ${TEST_SRC} -o $(TEST_TARGET) && ./$(TEST_TARGET)
+
 
 leaks:
 	valgrind --leak-check=full --show-leak-kinds=all ./$(TARGET)

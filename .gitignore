@@ -1,3 +1,4 @@
 include/*pch
 bin/sysinv
 src/*.o
+.DS_Store
