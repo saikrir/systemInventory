@@ -17,6 +17,8 @@ int main(int argc, char *argv[])
 
         if ((fd = create_db_file(SYSTEM_DB_FILE)) == STATUS_ERROR)
         {
+            free(header);
+            free(app_args);
             return STATUS_ERROR;
         }
 
@@ -29,12 +31,16 @@ int main(int argc, char *argv[])
     {
         if ((fd = open_db_file(app_args->filePath)) == STATUS_ERROR)
         {
+            free(header);
+            free(app_args);
             puts("failed to open file ");
             return STATUS_ERROR;
         }
 
         if (read_file_header(fd, &header) == STATUS_ERROR)
         {
+            free(header);
+            free(app_args);
             puts("failed to read header");
             return STATUS_ERROR;
         }
