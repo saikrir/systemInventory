@@ -1,4 +1,6 @@
 #ifndef COMMON_H
 #define COMMON_H
+#define STATUS_OK 1
+#define STATUS_ERROR -1
 int get_random_number(int, int);
 #endif

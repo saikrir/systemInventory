@@ -6,7 +6,7 @@ CFLAGS = -Wall -g -std=c23 -Iinclude
 
 # Source files
 
-COMMON_SRC = src/common.c src/sysmodel.c
+COMMON_SRC = src/common.c src/sysmodel.c src/parse.c src/file.c
 
 MAIN_SRC = $(COMMON_SRC) src/main.c
 
@@ -19,6 +19,8 @@ OBJ = $(MAIN_SRC:.c=.o)
 # The output executable
 TARGET = bin/sysinv
 TEST_TARGET = bin/tests
+DB_FILE = system.db
+
 
 # Default target
 all: $(TARGET)
@@ -35,6 +37,7 @@ $(TARGET): $(OBJ)
 clean:
 	rm -f $(OBJ) $(TARGET) $(TEST_TARGET)
 	rm -rf bin/*.dSYM
+	rm -rf $(DB_FILE)
 
 test:
 	$(CC) $(CFLAGS) ${TEST_SRC} -o $(TEST_TARGET) && ./$(TEST_TARGET)
