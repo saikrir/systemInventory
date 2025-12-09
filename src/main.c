@@ -26,6 +26,12 @@ system_model_t* accept_user_input() {
     fgets(sys_inv->cpuType, MAX_CPU_OS_LENGTH, stdin);
     sys_inv->cpuType[strlen(sys_inv->cpuType) - 1] = '\0';
 
+
+    printf("Please enter number of cpu cores: ");
+    int x =scanf("%d", &sys_inv->nCpuCores);
+    printf("CPU Core Result: %d ", x);
+
+
     printf("Please enter system clockSpeed in Ghz: ");
     scanf("%f", &sys_inv->clockSpeedGHZ);
 
@@ -44,6 +50,18 @@ system_model_t* accept_user_input() {
     return sys_inv;
 }
 
+void print_system_model(system_model_t *sysinv) {
+    printf("System Inventory : \n");
+    printf("System Name %s \n", sysinv->systemName);
+    printf("Vendor Name %s \n", sysinv->systemVendor);
+    printf("CPU Type %s \n", sysinv->cpuType);
+    printf("Number of CPU cores %d \n", sysinv->nCpuCores);
+    printf("CPU Freq %f \n", sysinv->clockSpeedGHZ);
+    printf("Memory Capacity %f GB \n", sysinv->memoryCapacityGB);
+    printf("Disk Capacity %f GB \n", sysinv->diskCapacityGB);
+    printf("OS Name %s \n", sysinv->os);
+}
+
 int main(const int argc, char *argv[])
 {
     printf("Welcome to System Inventory\n");
@@ -52,7 +70,7 @@ int main(const int argc, char *argv[])
 
     system_model_t *val = accept_user_input();
 
-    printf("System Inventory Header : \n");
+    print_system_model(val);
 
     int fd = 0;
     if (app_args->newFile)
