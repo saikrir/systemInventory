@@ -3,8 +3,9 @@
 #include <string.h>
 #include <arpa/inet.h> // For ntohl on Unix-like systems
 #include <unistd.h>
-#include <fcntl.h>
 #include <sys/stat.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 system_model_t *new_system_model(char *systemName, char *vndName, char *cpuType, int nCpuCores, float clockSpeed, float memory, float disk, char *os)
 {

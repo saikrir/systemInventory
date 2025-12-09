@@ -2,7 +2,7 @@
 CC = clang
 
 # Compiler flags
-CFLAGS = -Wall -g -std=c23 -Iinclude 
+CFLAGS = -Wall -g -std=c23
 
 # Source files
 

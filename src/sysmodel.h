@@ -1,8 +1,6 @@
 #ifndef SYSMODEL_H
 #define SYSMODEL_H
 #include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 #define MAGIC 0x5341494b
 #define SYS_INV_TXN_SUCCESS 0
