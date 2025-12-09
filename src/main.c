@@ -1,15 +1,58 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <parse.h>
+#include <string.h>
+
+#include "parse.h"
 #include "sysmodel.h"
 #include "common.h"
 #include "file.h"
 
-int main(int argc, char *argv[])
+
+system_model_t* accept_user_input() {
+
+    system_model_t *sys_inv = calloc(1 ,sizeof(system_model_t));
+
+    printf("Please enter system name: ");
+    fgets(sys_inv->systemName, MAX_NAME_LENGTH, stdin);
+    sys_inv->systemName[strlen(sys_inv->systemName) - 1] = '\0';
+
+
+    printf("Please enter vendor: ");
+    fgets(sys_inv->systemVendor, MAX_NAME_LENGTH, stdin);
+    sys_inv->systemVendor[strlen(sys_inv->systemVendor) - 1] = '\0';
+
+
+    printf("Please enter cpuType: ");
+    fgets(sys_inv->cpuType, MAX_CPU_OS_LENGTH, stdin);
+    sys_inv->cpuType[strlen(sys_inv->cpuType) - 1] = '\0';
+
+    printf("Please enter system clockSpeed in Ghz: ");
+    scanf("%f", &sys_inv->clockSpeedGHZ);
+
+
+    printf("Please enter memory capacity in GB: ");
+    scanf("%f", &sys_inv->memoryCapacityGB);
+
+
+    printf("Please enter disk capacity in GB: ");
+    scanf("%f", &sys_inv->diskCapacityGB);
+
+    printf("Please enter OS Name: ");
+    fgets(sys_inv->os, MAX_CPU_OS_LENGTH, stdin);
+    sys_inv->os[strlen(sys_inv->os) - 1] = '\0';
+
+    return sys_inv;
+}
+
+int main(const int argc, char *argv[])
 {
     printf("Welcome to System Inventory\n");
     app_args_t *app_args = parse_app_args(argc, argv);
-    system_inventory_header_t *header = NULL;
+    system_inventory_header_t *header = nullptr;
+
+    system_model_t *val = accept_user_input();
+
+    printf("System Inventory Header : \n");
 
     int fd = 0;
     if (app_args->newFile)
