@@ -30,7 +30,6 @@ system_model_t *new_system_model(char *systemName, char *systemType, char *vndNa
     strncpy(new_model->os, os, MAX_CPU_OS_LENGTH);
 
     puts("DEBUG:: all attributes copied ");
-    print_system_model(new_model);
     return new_model;
 }
 
@@ -151,11 +150,11 @@ int read_system_model(system_model_t **system_model)
     accept_string("Please enter SystemType (e.g Desktop, Tablet, Phone): ", &systemType, MAX_CPU_OS_LENGTH);
     accept_string("Please enter VendorName (e.g Apple, Samsung): ", &vendorName, MAX_NAME_LENGTH);
     accept_string("Please enter CpuType + Model (e.g AMD Ryzen 7, Intel i7): ", &cpuType, MAX_CPU_OS_LENGTH);
+    accept_string("Please enter OSName (e.g iOS, Android): ", &osName, MAX_CPU_OS_LENGTH);
     accept_int("Please enter Number of CPUs: ", &nCpuCores);
     accept_float("Please CPU Clockspeed in Ghz: ", &clockSpeed);
     accept_float("Please Memory Capacity in GB: ", &memoryCapacity);
     accept_float("Please Disk Capacity in GB: ", &diskCapacity);
-    accept_string("Please enter OSName (e.g iOS, Android): ", osName, MAX_CPU_OS_LENGTH);
 
     *system_model = new_system_model(sysName, systemType, vendorName, cpuType, nCpuCores, clockSpeed, memoryCapacity, diskCapacity, osName);
 

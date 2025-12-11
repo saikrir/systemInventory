@@ -77,8 +77,8 @@ int accept_string(const char *prompt, char **out, size_t size)
 
     } while (!inputLength || isspace(new_value[0]) == true);
     new_value[inputLength] = '\0';
-    char *temp = *out;
-    strncpy(temp, new_value, size);
+    strncpy(*out, new_value, size);
+    free(new_value);
     return STATUS_OK;
 }
 
@@ -91,12 +91,7 @@ int accept_float(const char *prompt, float *out)
 
 int accept_int(const char *prompt, int *out)
 {
-    char *value = NULL;
-
-    if (accept_string(prompt, &value, 5) == STATUS_ERROR)
-    {
-        return STATUS_ERROR;
-    }
-    *out = atoi(value);
+    printf("%s", prompt);
+    scanf("%d", out);
     return STATUS_OK;
 }
