@@ -15,7 +15,7 @@ void test_random_number()
 
 void test_create_new_model()
 {
-    system_model_t *model = new_system_model("MacBook Air", "Apple", "ARM-M3", 8, 4.05, 24.0, 256.0, "MacOS 15");
+    system_model_t *model = new_system_model("MacBook Air", "Laptop", "Apple", "ARM-M3", 8, 4.05, 24.0, 256.0, "MacOS 15");
     printf("%s, %s %f Ghz, %f GB \n", model->systemVendor, model->systemName, model->clockSpeedGHZ, model->memoryCapacityGB);
     munit_assert_false(model == NULL);
     free(model);
@@ -23,7 +23,16 @@ void test_create_new_model()
 
 int main(int argc, char const *argv[])
 {
-    // test_random_number();
-    test_create_new_model();
+    system_model_t *model = NULL;
+
+    if (read_system_model(&model) == STATUS_ERROR)
+    {
+        puts("failed");
+        return EXIT_FAILURE;
+    }
+
+    puts(model->systemName);
+    print_system_model(model);
+
     return 0;
 }

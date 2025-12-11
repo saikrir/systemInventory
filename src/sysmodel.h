@@ -23,6 +23,7 @@ struct SystemModel
 {
     int systemID;
     char systemName[MAX_NAME_LENGTH];
+    char systemType[MAX_CPU_OS_LENGTH];
     char systemVendor[MAX_NAME_LENGTH];
     char cpuType[MAX_CPU_OS_LENGTH];
     int nCpuCores;
@@ -35,7 +36,7 @@ struct SystemModel
 typedef struct SystemModel system_model_t;
 typedef struct SystemInventoryHeader system_inventory_header_t;
 
-system_model_t *new_system_model(char *systemName, char *vndName, char *cpuType, int nCpuCores, float clockSpeed, float memory, float disk, char *os);
+system_model_t *new_system_model(char *systemName, char *systemType, char *vndName, char *cpuType, int nCpuCores, float clockSpeed, float memory, float disk, char *os);
 
 int new_system_header(system_inventory_header_t **);
 
@@ -44,5 +45,9 @@ int write_file_header(int fd, system_inventory_header_t *);
 int read_file_header(int fd, system_inventory_header_t **out_header);
 
 int validate_header(int fd, system_inventory_header_t *header);
+
+void print_system_model(system_model_t *sysinv);
+
+int read_system_model(system_model_t **system_model);
 
 #endif

@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-system_model_t *new_system_model(char *systemName, char *vndName, char *cpuType, int nCpuCores, float clockSpeed, float memory, float disk, char *os)
+system_model_t *new_system_model(char *systemName, char *systemType, char *vndName, char *cpuType, int nCpuCores, float clockSpeed, float memory, float disk, char *os)
 {
     system_model_t *new_model = calloc(1, sizeof(system_model_t));
 
@@ -24,11 +24,13 @@ system_model_t *new_system_model(char *systemName, char *vndName, char *cpuType,
     new_model->nCpuCores = nCpuCores;
 
     strncpy(new_model->systemName, systemName, MAX_NAME_LENGTH);
+    strncpy(new_model->systemType, systemType, MAX_CPU_OS_LENGTH);
     strncpy(new_model->systemVendor, vndName, MAX_NAME_LENGTH);
     strncpy(new_model->cpuType, cpuType, MAX_CPU_OS_LENGTH);
     strncpy(new_model->os, os, MAX_CPU_OS_LENGTH);
 
-    puts("DEBUG:: all attributes copied");
+    puts("DEBUG:: all attributes copied ");
+    print_system_model(new_model);
     return new_model;
 }
 
@@ -114,5 +116,48 @@ int validate_header(int fd, system_inventory_header_t *header)
     }
 
     puts("INFO:: file validated");
+    return STATUS_OK;
+}
+
+void print_system_model(system_model_t *sysinv)
+{
+    printf("System Inventory : \n");
+    printf("System Name %s \n", sysinv->systemName);
+    printf("System Type %s \n", sysinv->systemType);
+    printf("Vendor Name %s \n", sysinv->systemVendor);
+    printf("CPU Type %s \n", sysinv->cpuType);
+    printf("Number of CPU cores %d \n", sysinv->nCpuCores);
+    printf("CPU Freq %f \n", sysinv->clockSpeedGHZ);
+    printf("Memory Capacity %f GB \n", sysinv->memoryCapacityGB);
+    printf("Disk Capacity %f GB \n", sysinv->diskCapacityGB);
+    printf("OS Name %s \n", sysinv->os);
+}
+
+int read_system_model(system_model_t **system_model)
+{
+
+    char *sysName = calloc(MAX_NAME_LENGTH, sizeof(char));
+    char *systemType = calloc(MAX_CPU_OS_LENGTH, sizeof(char));
+    char *vendorName = calloc(MAX_NAME_LENGTH, sizeof(char));
+    char *cpuType = calloc(MAX_CPU_OS_LENGTH, sizeof(char));
+    char *osName = calloc(MAX_CPU_OS_LENGTH, sizeof(char));
+
+    int nCpuCores = 0;
+    float clockSpeed = 0;
+    float memoryCapacity = 0;
+    float diskCapacity = 0;
+
+    accept_string("Please enter SystemName (e.g MyPC-1): ", &sysName, MAX_NAME_LENGTH);
+    accept_string("Please enter SystemType (e.g Desktop, Tablet, Phone): ", &systemType, MAX_CPU_OS_LENGTH);
+    accept_string("Please enter VendorName (e.g Apple, Samsung): ", &vendorName, MAX_NAME_LENGTH);
+    accept_string("Please enter CpuType + Model (e.g AMD Ryzen 7, Intel i7): ", &cpuType, MAX_CPU_OS_LENGTH);
+    accept_int("Please enter Number of CPUs: ", &nCpuCores);
+    accept_float("Please CPU Clockspeed in Ghz: ", &clockSpeed);
+    accept_float("Please Memory Capacity in GB: ", &memoryCapacity);
+    accept_float("Please Disk Capacity in GB: ", &diskCapacity);
+    accept_string("Please enter OSName (e.g iOS, Android): ", osName, MAX_CPU_OS_LENGTH);
+
+    *system_model = new_system_model(sysName, systemType, vendorName, cpuType, nCpuCores, clockSpeed, memoryCapacity, diskCapacity, osName);
+
     return STATUS_OK;
 }
