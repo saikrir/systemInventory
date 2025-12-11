@@ -66,7 +66,7 @@ int main(const int argc, char *argv[])
 {
     printf("Welcome to System Inventory\n");
     app_args_t *app_args = parse_app_args(argc, argv);
-    system_inventory_header_t *header = nullptr;
+    system_inventory_header_t *header = NULL;
 
     system_model_t *val = accept_user_input();
 
