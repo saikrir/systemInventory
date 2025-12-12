@@ -50,16 +50,17 @@ int main(const int argc, char *argv[])
         }
 
         printf("Found [%d] Records \n", header->count);
+        printf("--------------------------------------------------------------------\n");
 
         if (header->count == 0)
         {
             return STATUS_OK;
         }
 
-
         if (read_inv_records(fd, header, &systems) == STATUS_OK)
         {
-            for (int i = 0; i < header->count; i++) {
+            for (int i = 0; i < header->count; i++)
+            {
                 print_system_model(&systems[i]);
                 printf("--------------------------------------------------------------------\n");
             }
@@ -84,7 +85,8 @@ int main(const int argc, char *argv[])
             return STATUS_ERROR;
         }
 
-        if (read_inv_records(fd, header, &systems) == STATUS_ERROR) {
+        if (read_inv_records(fd, header, &systems) == STATUS_ERROR)
+        {
             free(header);
             free(app_args);
             puts("failed to records");
@@ -102,11 +104,9 @@ int main(const int argc, char *argv[])
         header->count++;
         systems = realloc(systems, header->count * sizeof(system_model_t *));
         write_record(fd, header, system, &systems); /* code */
-        free(system);
     }
 
     free(systems);
-   // free(header);
     free(app_args);
     close_db_file(fd);
     return EXIT_SUCCESS;
