@@ -45,7 +45,7 @@ int new_system_header(system_inventory_header_t **header_out)
 
     header->count = 0;
     header->magic = MAGIC;
-    header->fileSize = sizeof(system_inventory_header_t)  + (sizeof(system_model_t) * header->count);
+    header->fileSize = sizeof(system_inventory_header_t) + (sizeof(system_model_t) * header->count);
     header->version = 1;
 
     *header_out = header;
@@ -58,7 +58,7 @@ int write_file_header(int fd, system_inventory_header_t *header)
     // header->magic = htonl(MAGIC);
     // header->fileSize = htonl(sizeof(system_inventory_header_t)  + sizeof(system_model_t) * header->count);
     // header->version = htons(1);
-    header->fileSize = sizeof(system_inventory_header_t)  + (sizeof(system_model_t) * header->count);
+    header->fileSize = sizeof(system_inventory_header_t) + (sizeof(system_model_t) * header->count);
     lseek(fd, 0, SEEK_SET);
     write(fd, header, sizeof(system_inventory_header_t));
     return STATUS_OK;
@@ -69,8 +69,6 @@ int write_system_model(int fd, system_model_t *record)
     write(fd, record, sizeof(system_model_t));
     return STATUS_OK;
 }
-
-
 
 int read_file_header(int fd, system_inventory_header_t **out_header)
 {
@@ -129,18 +127,18 @@ int validate_header(int fd, system_inventory_header_t *header)
 void print_system_model(system_model_t *sysinv)
 {
     printf("System Inventory : \n");
-    printf("System Name %s \n", sysinv->systemName);
-    printf("System Type %s \n", sysinv->systemType);
-    printf("Vendor Name %s \n", sysinv->systemVendor);
-    printf("CPU Type %s \n", sysinv->cpuType);
-    printf("Number of CPU cores %d \n", sysinv->nCpuCores);
-    printf("CPU Freq %f \n", sysinv->clockSpeedGHZ);
-    printf("Memory Capacity %f GB \n", sysinv->memoryCapacityGB);
-    printf("Disk Capacity %f GB \n", sysinv->diskCapacityGB);
-    printf("OS Name %s \n", sysinv->os);
+    printf("System Name : %s \n", sysinv->systemName);
+    printf("System Type : %s \n", sysinv->systemType);
+    printf("Vendor Name : %s \n", sysinv->systemVendor);
+    printf("CPU Type : %s \n", sysinv->cpuType);
+    printf("Number of CPU cores : %d \n", sysinv->nCpuCores);
+    printf("CPU Freq : %f \n", sysinv->clockSpeedGHZ);
+    printf("Memory Capacity : %f GB \n", sysinv->memoryCapacityGB);
+    printf("Disk Capacity : %f GB \n", sysinv->diskCapacityGB);
+    printf("OS Name : %s \n", sysinv->os);
 }
 
-int read_system_model(system_model_t **system_model)
+int accept_system_model(system_model_t **system_model)
 {
 
     char *sysName = calloc(MAX_NAME_LENGTH, sizeof(char));
@@ -169,8 +167,10 @@ int read_system_model(system_model_t **system_model)
     return STATUS_OK;
 }
 
-int write_record(int fd, system_inventory_header_t *header, system_model_t *sysinv) {
-    if (fd < 0) {
+int write_record(int fd, system_inventory_header_t *header, system_model_t *sysinv)
+{
+    if (fd < 0)
+    {
         puts("ERROR:: failed to write system model, invalid file header");
         return STATUS_ERROR;
     }
@@ -180,8 +180,10 @@ int write_record(int fd, system_inventory_header_t *header, system_model_t *sysi
     return STATUS_OK;
 }
 
-int read_inv_records(int fd, system_inventory_header_t *header, system_model_t **sysinv) {
-    if (fd < 0) {
+int read_inv_records(int fd, system_inventory_header_t *header, system_model_t **sysinv)
+{
+    if (fd < 0)
+    {
         puts("ERROR:: failed to write system model, invalid file header");
         return STATUS_ERROR;
     }

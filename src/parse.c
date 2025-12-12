@@ -16,12 +16,19 @@ app_args_t *parse_app_args(int argc, char **argv)
     }
 
     int c;
-    while ((c = getopt(argc, argv, "nf:a")) != -1)
+    while ((c = getopt(argc, argv, "nf:al")) != -1)
     {
         switch (c)
         {
         case 'n':
             app_args->newFile = true;
+            break;
+
+        case 'a':
+            app_args->add = true;
+            break;
+        case 'l':
+            app_args->list = true;
             break;
         case 'f':
             strncpy(app_args->filePath, optarg, FILE_PATH_MAX_LENGTH);

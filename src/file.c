@@ -26,3 +26,7 @@ int create_db_file(char *file_name)
     }
     return fd;
 }
+
+void close_db_file(int fd) {
+    close(fd);
+}

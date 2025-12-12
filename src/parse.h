@@ -6,6 +6,8 @@
 typedef struct AppArgs
 {
     bool newFile;
+    bool list;
+    bool add;
     char filePath[FILE_PATH_MAX_LENGTH];
 } app_args_t;
 app_args_t *parse_app_args(int, char **);
