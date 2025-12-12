@@ -114,9 +114,7 @@ int validate_header(int fd, system_inventory_header_t *header)
         return STATUS_ERROR;
     }
 
-    if (!(header->magic == MAGIC && header->version == 1
-        && db_stat.st_size == header->fileSize
-        ))
+    if (!(header->magic == MAGIC && header->version == 1 && db_stat.st_size == header->fileSize))
     {
         puts("WARN:: validation failed");
         return STATUS_ERROR;
@@ -177,10 +175,11 @@ int write_record(int fd, system_inventory_header_t *header, system_model_t *sysi
         return STATUS_ERROR;
     }
 
-    systems[header->count-1] = sysinv;
+    systems[header->count - 1] = sysinv;
 
     write_file_header(fd, header);
-    for (int i = 0; i < header->count; i++) {
+    for (int i = 0; i < header->count; i++)
+    {
         write_system_model(fd, systems[i]);
     }
 
@@ -196,7 +195,6 @@ int read_inv_records(int fd, system_inventory_header_t *header, system_model_t *
     }
 
     system_model_t *models = calloc(header->count, sizeof(system_model_t));
-
 
     read(fd, models, sizeof(system_model_t) * header->count);
 
