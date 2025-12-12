@@ -49,18 +49,21 @@ int main(const int argc, char *argv[])
             return STATUS_ERROR;
         }
 
+        printf("Found [%d] Records \n", header->count);
+
         if (header->count == 0)
         {
-            printf("No Records \n");
             return STATUS_OK;
         }
 
+
         if (read_inv_records(fd, header, &systems) == STATUS_OK)
         {
-            print_system_model(&systems[0]);
+            for (int i = 0; i < header->count; i++) {
+                print_system_model(&systems[i]);
+                printf("--------------------------------------------------------------------\n");
+            }
         }
-
-        printf("File Magic: %u, Version: %d, size: %u, Count: %d \n", header->magic, header->version, header->fileSize, header->count);
     }
 
     else if (app_args->add)
@@ -81,6 +84,13 @@ int main(const int argc, char *argv[])
             return STATUS_ERROR;
         }
 
+        if (read_inv_records(fd, header, &systems) == STATUS_ERROR) {
+            free(header);
+            free(app_args);
+            puts("failed to records");
+            return STATUS_ERROR;
+        }
+
         system_model_t *system = NULL;
         if (accept_system_model(&system) != STATUS_OK)
         {
@@ -90,12 +100,13 @@ int main(const int argc, char *argv[])
             return STATUS_ERROR;
         }
         header->count++;
-        write_record(fd, header, system); /* code */
+        systems = realloc(systems, header->count * sizeof(system_model_t *));
+        write_record(fd, header, system, &systems); /* code */
         free(system);
     }
 
     free(systems);
-    free(header);
+   // free(header);
     free(app_args);
     close_db_file(fd);
     return EXIT_SUCCESS;
