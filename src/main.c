@@ -8,47 +8,6 @@
 #include "file.h"
 
 
-system_model_t* accept_user_input() {
-
-    system_model_t *sys_inv = calloc(1 ,sizeof(system_model_t));
-
-    printf("Please enter system name: ");
-    fgets(sys_inv->systemName, MAX_NAME_LENGTH, stdin);
-    sys_inv->systemName[strlen(sys_inv->systemName) - 1] = '\0';
-
-
-    printf("Please enter vendor: ");
-    fgets(sys_inv->systemVendor, MAX_NAME_LENGTH, stdin);
-    sys_inv->systemVendor[strlen(sys_inv->systemVendor) - 1] = '\0';
-
-
-    printf("Please enter cpuType: ");
-    fgets(sys_inv->cpuType, MAX_CPU_OS_LENGTH, stdin);
-    sys_inv->cpuType[strlen(sys_inv->cpuType) - 1] = '\0';
-
-
-    printf("Please enter number of cpu cores: ");
-    int x =scanf("%d", &sys_inv->nCpuCores);
-    printf("CPU Core Result: %d ", x);
-
-
-    printf("Please enter system clockSpeed in Ghz: ");
-    scanf("%f", &sys_inv->clockSpeedGHZ);
-
-
-    printf("Please enter memory capacity in GB: ");
-    scanf("%f", &sys_inv->memoryCapacityGB);
-
-
-    printf("Please enter disk capacity in GB: ");
-    scanf("%f", &sys_inv->diskCapacityGB);
-
-    printf("Please enter OS Name: ");
-    fgets(sys_inv->os, MAX_CPU_OS_LENGTH, stdin);
-    sys_inv->os[strlen(sys_inv->os) - 1] = '\0';
-
-    return sys_inv;
-}
 
 
 
@@ -57,10 +16,11 @@ int main(const int argc, char *argv[])
     printf("Welcome to System Inventory\n");
     app_args_t *app_args = parse_app_args(argc, argv);
     system_inventory_header_t *header = NULL;
+    system_model_t **systems = NULL;
 
-    system_model_t *val = accept_user_input();
+    //app_args->newFile =true;
 
-    print_system_model(val);
+
 
     int fd = 0;
     if (app_args->newFile)
@@ -77,6 +37,16 @@ int main(const int argc, char *argv[])
         {
             puts("INFO::file written");
         }
+
+        system_model_t *system = NULL;
+        if (read_system_model(&system)!= STATUS_OK) {
+            free(header);
+            free(system);
+            puts("failed to read system model");
+            return STATUS_ERROR;
+        }
+        header-> count++;
+        write_record(fd, header, system);
     }
     else
     {
@@ -94,6 +64,11 @@ int main(const int argc, char *argv[])
             free(app_args);
             puts("failed to read header");
             return STATUS_ERROR;
+        }
+
+        system_model_t *systems = NULL;
+        if (read_inv_records(fd, header, &systems) == STATUS_OK) {
+            print_system_model(&systems[0]);
         }
 
         printf("File Magic: %u, Version: %d, size: %u, Count: %d \n", header->magic, header->version, header->fileSize, header->count);

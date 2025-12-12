@@ -16,7 +16,7 @@ app_args_t *parse_app_args(int argc, char **argv)
     }
 
     int c;
-    while ((c = getopt(argc, argv, "nf:")) != -1)
+    while ((c = getopt(argc, argv, "nf:a")) != -1)
     {
         switch (c)
         {

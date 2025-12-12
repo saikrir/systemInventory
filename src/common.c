@@ -7,45 +7,37 @@
 
 void trimSpace(char **str)
 {
-    char *temp = *str;
+    char *the_string = calloc(strlen(*str), sizeof(char));
+    strncpy(the_string, *str, strlen(*str));
 
-    if (str == NULL || strlen(temp) == 0)
+    int n_spaces = 0;
+
+
+    for (int i = 0; i < strlen(the_string); i++)
     {
-        return;
-    }
-
-    size_t len = strlen(temp);
-    int lPad = 0, rPad = 0;
-
-    for (; lPad < len - 1; lPad++)
-    {
-        if (!isspace(temp[lPad]))
-        {
+        if (!isspace(the_string[i])) {
             break;
         }
+        n_spaces++;
     }
 
-    for (size_t endIndex = len - 1; endIndex > 0; endIndex--, rPad++)
+    the_string+= n_spaces;
+
+    int l_spaces = 0;
+
+    for (size_t i = strlen(the_string) - 1; i > 0; i--)
     {
-        if (!isspace(temp[endIndex]))
-        {
-            break;
-        }
+        if (isspace(the_string[i]))
+            l_spaces++;
     }
 
-    if (lPad == 0 && rPad == 0)
-    {
-        return;
-    }
+    the_string[strlen(the_string) - l_spaces] = '\0';
 
-    int newLength = (len - (lPad + rPad));
+    char *temp = calloc(strlen(the_string), sizeof(char));
+    strcpy(temp, the_string);
+    free(the_string);
 
-    char *newstr = calloc(newLength + 1, sizeof(char));
-
-    strncpy(newstr, temp + lPad, newLength);
-
-    newstr[newLength] = '\0';
-    *str = newstr;
+    *str = temp;
 }
 
 int get_random_number(int lower_bound, int upper_bound)

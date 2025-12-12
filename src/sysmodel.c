@@ -45,7 +45,7 @@ int new_system_header(system_inventory_header_t **header_out)
 
     header->count = 0;
     header->magic = MAGIC;
-    header->fileSize = sizeof(system_inventory_header_t);
+    header->fileSize = sizeof(system_inventory_header_t)  + (sizeof(system_model_t) * header->count);
     header->version = 1;
 
     *header_out = header;
@@ -54,15 +54,23 @@ int new_system_header(system_inventory_header_t **header_out)
 
 int write_file_header(int fd, system_inventory_header_t *header)
 {
-    header->count = htons(0);
-    header->magic = htonl(MAGIC);
-    header->fileSize = htonl(sizeof(system_inventory_header_t));
-    header->version = htons(1);
+    // header->count = htons(header-> count);
+    // header->magic = htonl(MAGIC);
+    // header->fileSize = htonl(sizeof(system_inventory_header_t)  + sizeof(system_model_t) * header->count);
+    // header->version = htons(1);
+    header->fileSize = sizeof(system_inventory_header_t)  + (sizeof(system_model_t) * header->count);
     lseek(fd, 0, SEEK_SET);
     write(fd, header, sizeof(system_inventory_header_t));
-    close(fd);
     return STATUS_OK;
 }
+
+int write_system_model(int fd, system_model_t *record)
+{
+    write(fd, record, sizeof(system_model_t));
+    return STATUS_OK;
+}
+
+
 
 int read_file_header(int fd, system_inventory_header_t **out_header)
 {
@@ -81,10 +89,10 @@ int read_file_header(int fd, system_inventory_header_t **out_header)
 
     read(fd, header, sizeof(system_inventory_header_t));
 
-    header->count = ntohs(header->count);
-    header->magic = ntohl(header->magic);
-    header->fileSize = ntohl(header->fileSize);
-    header->version = ntohs(header->version);
+    // header->count = ntohs(header->count);
+    // header->magic = ntohl(header->magic);
+    // header->fileSize = ntohl(header->fileSize);
+    // header->version = ntohs(header->version);
 
     *out_header = header;
     return validate_header(fd, header);
@@ -108,7 +116,7 @@ int validate_header(int fd, system_inventory_header_t *header)
         return STATUS_ERROR;
     }
 
-    if (!(header->magic == MAGIC && header->fileSize == db_stat.st_size && header->version == 1))
+    if (!(header->magic == MAGIC && header->version == 1 && db_stat.st_size == header->fileSize))
     {
         puts("WARN:: validation failed");
         return STATUS_ERROR;
@@ -158,5 +166,29 @@ int read_system_model(system_model_t **system_model)
 
     *system_model = new_system_model(sysName, systemType, vendorName, cpuType, nCpuCores, clockSpeed, memoryCapacity, diskCapacity, osName);
 
+    return STATUS_OK;
+}
+
+int write_record(int fd, system_inventory_header_t *header, system_model_t *sysinv) {
+    if (fd < 0) {
+        puts("ERROR:: failed to write system model, invalid file header");
+        return STATUS_ERROR;
+    }
+    write_file_header(fd, header);
+    write_system_model(fd, sysinv);
+
+    return STATUS_OK;
+}
+
+int read_inv_records(int fd, system_inventory_header_t *header, system_model_t **sysinv) {
+    if (fd < 0) {
+        puts("ERROR:: failed to write system model, invalid file header");
+        return STATUS_ERROR;
+    }
+
+    system_model_t *models = calloc(header->count, sizeof(system_model_t));
+    read(fd, models, sizeof(system_model_t) * header->count);
+
+    *sysinv = models;
     return STATUS_OK;
 }
