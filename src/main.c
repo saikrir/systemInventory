@@ -101,12 +101,14 @@ int main(const int argc, char *argv[])
             puts("failed to read system model");
             return STATUS_ERROR;
         }
+
         header->count++;
-        systems = realloc(systems, header->count * sizeof(system_model_t *));
-        write_record(fd, header, system, &systems); /* code */
+        systems = realloc(systems, header->count * sizeof(system_model_t));
+        write_record(fd, header, *system, systems);
     }
 
     free(systems);
+    free(header);
     free(app_args);
     close_db_file(fd);
     return EXIT_SUCCESS;

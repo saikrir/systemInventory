@@ -126,7 +126,7 @@ int validate_header(int fd, system_inventory_header_t *header)
 
 void print_system_model(system_model_t *sysinv)
 {
-    printf("System Inventory : \n");
+    printf("System Inventory ID:[%d]: \n", sysinv->systemID);
     printf("System Name : %s \n", sysinv->systemName);
     printf("System Type : %s \n", sysinv->systemType);
     printf("Vendor Name : %s \n", sysinv->systemVendor);
@@ -158,8 +158,8 @@ int accept_system_model(system_model_t **system_model)
     accept_string("Please enter CpuType + Model (e.g AMD Ryzen 7, Intel i7): ", &cpuType, MAX_CPU_OS_LENGTH);
     accept_string("Please enter OSName (e.g iOS, Android): ", &osName, MAX_CPU_OS_LENGTH);
     accept_int("Please enter Number of CPUs: ", &nCpuCores);
-    accept_float("Please CPU Clockspeed in Ghz: ", &clockSpeed);
-    accept_float("Please Memory Capacity in GB: ", &memoryCapacity);
+    accept_float("Please CPU Clock speed in Ghz: ", &clockSpeed);
+    accept_float("Please RAM Capacity in GB: ", &memoryCapacity);
     accept_float("Please Disk Capacity in GB: ", &diskCapacity);
 
     *system_model = new_system_model(sysName, systemType, vendorName, cpuType, nCpuCores, clockSpeed, memoryCapacity, diskCapacity, osName);
@@ -167,7 +167,7 @@ int accept_system_model(system_model_t **system_model)
     return STATUS_OK;
 }
 
-int write_record(int fd, system_inventory_header_t *header, system_model_t *sysinv, system_model_t **systems)
+int write_record(int fd, system_inventory_header_t *header, system_model_t sysinv, system_model_t *systems)
 {
     if (fd < 0)
     {
@@ -175,12 +175,18 @@ int write_record(int fd, system_inventory_header_t *header, system_model_t *sysi
         return STATUS_ERROR;
     }
 
+    print_system_model(systems);
+    print_system_model(systems+1);
+
+    lseek(fd, 0, SEEK_SET);
+
+
     systems[header->count - 1] = sysinv;
 
     write_file_header(fd, header);
     for (int i = 0; i < header->count; i++)
     {
-        write_system_model(fd, systems[i]);
+        write_system_model(fd, &systems[i]);
     }
 
     return STATUS_OK;

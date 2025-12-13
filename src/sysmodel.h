@@ -50,7 +50,7 @@ void print_system_model(system_model_t *sysinv);
 
 int accept_system_model(system_model_t **system_model);
 
-int write_record(int fd, system_inventory_header_t *header, system_model_t *sysinv, system_model_t **systems);
+int write_record(int fd, system_inventory_header_t *header, system_model_t sysinv, system_model_t *systems);
 
 int read_inv_records(int fd, system_inventory_header_t *header, system_model_t **sysinv);
 
