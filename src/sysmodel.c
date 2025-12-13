@@ -175,12 +175,6 @@ int write_record(int fd, system_inventory_header_t *header, system_model_t sysin
         return STATUS_ERROR;
     }
 
-    print_system_model(systems);
-    print_system_model(systems+1);
-
-    lseek(fd, 0, SEEK_SET);
-
-
     systems[header->count - 1] = sysinv;
 
     write_file_header(fd, header);
