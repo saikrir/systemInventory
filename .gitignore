@@ -3,3 +3,6 @@ bin/sysinv
 src/*.o
 .DS_Store
 .idea
+.vscode
+*.log
+*.tmp

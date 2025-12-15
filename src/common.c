@@ -46,7 +46,7 @@ int get_random_number(int lower_bound, int upper_bound)
     return rand() % (upper_bound + 1 - lower_bound) + lower_bound;
 }
 
-int accept_string(const char *prompt, char **out, size_t size)
+int accept_string(const char *prompt, char **out, int size)
 {
     char *new_value = calloc(size, sizeof(char));
     if (new_value == NULL)
@@ -56,7 +56,7 @@ int accept_string(const char *prompt, char **out, size_t size)
         return STATUS_ERROR;
     }
 
-    int inputLength = 0;
+    size_t inputLength = 0;
     do
     {
         printf("%s", prompt);

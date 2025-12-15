@@ -18,7 +18,7 @@ int main(const int argc, char *argv[])
     if (app_args->newFile)
     {
 
-        if ((fd = create_db_file(SYSTEM_DB_FILE)) == STATUS_ERROR)
+        if ((fd = create_db_file(SYSTEM_DB_FILE)) != STATUS_OK)
         {
             free(header);
             free(app_args);
@@ -32,7 +32,6 @@ int main(const int argc, char *argv[])
     }
     else if (app_args->list)
     {
-        strcpy(app_args->filePath, SYSTEM_DB_FILE);
         if ((fd = open_db_file(app_args->filePath)) == STATUS_ERROR)
         {
             free(header);
