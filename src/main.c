@@ -6,19 +6,20 @@
 #include "sysmodel.h"
 #include "common.h"
 #include "file.h"
+#include "linked_list.h"
 
 int main(const int argc, char *argv[])
 {
     printf("Welcome to System Inventory\n");
     app_args_t *app_args = parse_app_args(argc, argv);
     system_inventory_header_t *header = NULL;
-    system_model_t *systems = NULL;
+    list_t *sysList = NULL;
 
     int fd = 0;
     if (app_args->newFile)
     {
 
-        if ((fd = create_db_file(SYSTEM_DB_FILE)) != STATUS_OK)
+        if ((fd = create_db_file(SYSTEM_DB_FILE)) < 2)
         {
             free(header);
             free(app_args);
@@ -29,10 +30,13 @@ int main(const int argc, char *argv[])
         {
             puts("INFO::file written");
         }
+        sysList = new_linked_list();
     }
     else if (app_args->list)
     {
-        if ((fd = open_db_file(app_args->filePath)) == STATUS_ERROR)
+        fd = open_db_file(app_args->filePath);
+        printf("Will open %s, fd[%d] \n", app_args->filePath, fd);
+        if (fd < 0)
         {
             free(header);
             free(app_args);
@@ -56,19 +60,25 @@ int main(const int argc, char *argv[])
             return STATUS_OK;
         }
 
-        if (read_inv_records(fd, header, &systems) == STATUS_OK)
+        sysList = new_linked_list();
+
+        if (read_inv_records(fd, header, sysList) == STATUS_OK)
         {
-            for (int i = 0; i < header->count; i++)
+            for (int i = 0; i < size(sysList); i++)
             {
-                print_system_model(&systems[i]);
-                printf("--------------------------------------------------------------------\n");
+                system_model_t *sys_node = get(sysList, i);
+                if (sys_node != NULL) {
+                    print_system_model(sys_node);
+                    printf("--------------------------------------------------------------------\n");
+                }
+
             }
         }
     }
-
-    else if (app_args->add)
+    else if (app_args-> search)
     {
-        if ((fd = open_db_file(SYSTEM_DB_FILE)) == STATUS_ERROR)
+        fd = open_db_file(SYSTEM_DB_FILE);
+        if (fd < 0)
         {
             free(header);
             free(app_args);
@@ -84,7 +94,54 @@ int main(const int argc, char *argv[])
             return STATUS_ERROR;
         }
 
-        if (read_inv_records(fd, header, &systems) == STATUS_ERROR)
+
+
+        if (header->count == 0)
+        {
+            return STATUS_OK;
+        }
+
+        sysList = new_linked_list();
+
+        if (read_inv_records(fd, header, sysList) == STATUS_OK)
+        {
+           list_t *search_results = find_system_model(sysList, app_args->search_str);
+            if (search_results == NULL) {
+                puts("failed to find system model");
+            }
+
+            int s_size = size(search_results);
+
+            printf("Search Found [%d] Records \n", s_size );
+            printf("--------------------------------------------------------------------\n");
+            for (int i = 0; i < size(search_results); i++) {
+                system_model_t *sys_node = get(search_results, i);
+                print_system_model(sys_node);
+                printf("--------------------------------------------------------------------\n");
+            }
+            free_list(search_results);
+        }
+    }
+
+    else if (app_args->add)
+    {
+        if ((fd = open_db_file(SYSTEM_DB_FILE)) < 0)
+        {
+            free(header);
+            free(app_args);
+            puts("failed to open file ");
+            return STATUS_ERROR;
+        }
+
+        if (read_file_header(fd, &header) == STATUS_ERROR)
+        {
+            free(header);
+            free(app_args);
+            puts("failed to read header");
+            return STATUS_ERROR;
+        }
+        sysList = new_linked_list();
+        if (read_inv_records(fd, header, sysList) == STATUS_ERROR)
         {
             free(header);
             free(app_args);
@@ -102,11 +159,14 @@ int main(const int argc, char *argv[])
         }
 
         header->count++;
-        systems = realloc(systems, header->count * sizeof(system_model_t));
-        write_record(fd, header, *system, systems);
+        add_node(sysList, system);
+        write_record(fd, header, sysList);
     }
 
-    free(systems);
+    if (sysList!= NULL) {
+        puts("will free sysList");
+        free_list(sysList);
+    }
     free(header);
     free(app_args);
     close_db_file(fd);

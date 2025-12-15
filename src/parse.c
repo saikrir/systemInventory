@@ -16,7 +16,7 @@ app_args_t *parse_app_args(int argc, char **argv)
     }
 
     int c;
-    while ((c = getopt(argc, argv, "nf:al")) != -1)
+    while ((c = getopt(argc, argv, "nf:als:")) != -1)
     {
         switch (c)
         {
@@ -32,6 +32,10 @@ app_args_t *parse_app_args(int argc, char **argv)
             break;
         case 'f':
             strncpy(app_args->filePath, optarg, FILE_PATH_MAX_LENGTH);
+            break;
+        case 's':
+                app_args->search = true;
+            strncpy(app_args->search_str, optarg, MAX_NAME_LENGTH);
             break;
         default:
             break;

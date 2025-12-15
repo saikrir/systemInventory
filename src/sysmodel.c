@@ -126,6 +126,12 @@ int validate_header(int fd, system_inventory_header_t *header)
 
 void print_system_model(system_model_t *sysinv)
 {
+
+    if (sysinv == NULL) {
+        puts("ERROR:: NULL system_model");
+        return;
+    }
+
     printf("System Inventory ID:[%d]: \n", sysinv->systemID);
     printf("System Name : %s \n", sysinv->systemName);
     printf("System Type : %s \n", sysinv->systemType);
@@ -167,7 +173,7 @@ int accept_system_model(system_model_t **system_model)
     return STATUS_OK;
 }
 
-int write_record(int fd, system_inventory_header_t *header, system_model_t sysinv, system_model_t *systems)
+int write_record(int fd, system_inventory_header_t *header, list_t *systems)
 {
     if (fd < 0)
     {
@@ -175,18 +181,17 @@ int write_record(int fd, system_inventory_header_t *header, system_model_t sysin
         return STATUS_ERROR;
     }
 
-    systems[header->count - 1] = sysinv;
-
     write_file_header(fd, header);
     for (int i = 0; i < header->count; i++)
     {
-        write_system_model(fd, &systems[i]);
+        system_model_t *model = get(systems,i);
+        write_system_model(fd, model);
     }
 
     return STATUS_OK;
 }
 
-int read_inv_records(int fd, system_inventory_header_t *header, system_model_t **sysinv)
+int read_inv_records(int fd, system_inventory_header_t *header, list_t *systems)
 {
     if (fd < 0)
     {
@@ -195,9 +200,29 @@ int read_inv_records(int fd, system_inventory_header_t *header, system_model_t *
     }
 
     system_model_t *models = calloc(header->count, sizeof(system_model_t));
-
     read(fd, models, sizeof(system_model_t) * header->count);
 
-    *sysinv = models;
+    for (int i = 0; i < header->count; i++) {
+        add_node(systems,  &models[i]);
+    }
     return STATUS_OK;
+}
+
+
+list_t * find_system_model(list_t *systems, char *system_name)
+{
+    list_t *srch_results = new_linked_list();
+
+    if (systems == NULL) {
+        return srch_results;
+    }
+
+    for (int i=0; i < size(systems); i++) {
+        system_model_t *system = get(systems, i);
+        if (strstr(system->systemName, system_name) != NULL) {
+            add_node(srch_results, system);
+        }
+    }
+
+    return srch_results;
 }

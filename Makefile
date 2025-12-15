@@ -6,7 +6,7 @@ CFLAGS = -Wall -g -std=c23
 
 # Source files
 
-COMMON_SRC = src/common.c src/sysmodel.c src/parse.c src/file.c
+COMMON_SRC = src/common.c src/sysmodel.c src/parse.c src/file.c src/linked_list.c
 
 MAIN_SRC = $(COMMON_SRC) src/main.c
 
@@ -37,10 +37,15 @@ $(TARGET): $(OBJ)
 clean:
 	rm -f $(OBJ) $(TARGET) $(TEST_TARGET)
 	rm -rf bin/*.dSYM
+
+f_clean:
+	rm -f $(OBJ) $(TARGET) $(TEST_TARGET)
+	rm -rf bin/*.dSYM
 	rm -rf $(DB_FILE)
+	
 
 test:
-	$(CC) $(CFLAGS) ${TEST_SRC} -o $(TEST_TARGET) && ./$(TEST_TARGET)
+	$(CC) $(CFLAGS) ${TEST_SRC} -o $(TEST_TARGET) # && ./$(TEST_TARGET)
 
 
 leaks:

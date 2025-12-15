@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 void trimSpace(char **str)
 {
@@ -12,16 +13,16 @@ void trimSpace(char **str)
 
     int n_spaces = 0;
 
-
     for (int i = 0; i < strlen(the_string); i++)
     {
-        if (!isspace(the_string[i])) {
+        if (!isspace(the_string[i]))
+        {
             break;
         }
         n_spaces++;
     }
 
-    the_string+= n_spaces;
+    the_string += n_spaces;
 
     int l_spaces = 0;
 

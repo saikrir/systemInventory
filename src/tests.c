@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "linked_list.h"
 
 void test_random_number()
 {
@@ -19,26 +20,33 @@ void test_create_new_model()
     free(model);
 }
 
-int main_(int argc, char const *argv[])
+bool compare_nodes(node_t *node1, node_t *node2) {
+
+    if (node1==NULL && node2==NULL) return false;
+
+    char *v1 = (char *) node1->value;
+    char *v2 = (char *) node2->value;
+
+    if (v1!= NULL && v2 != NULL && strcmp(v1, v2) == 0) {
+        return true;
+    }
+    return false;
+}
+
+int main(int argc, char const *argv[])
 {
-    // system_model_t *model = NULL;
 
-    // if (read_system_model(&model) == STATUS_ERROR)
-    // {
-    //     puts("failed");
-    //     return EXIT_FAILURE;
-    // }
+    list_t *list = new_linked_list();
+    node_t *n0 = add_node(list, "Sai");
+    node_t *n1 = add_node(list, "Krishna");
+    node_t *n2 = add_node(list, "Rao");
+    node_t *n3 = add_node(list, "Katterishetty");
 
-    // puts(model->systemName);
-    // print_system_model(model);
-
-
-    char *name = "Sai  ";
+   set(list,0, "Sunny");
+    print_nodes(list);
 
 
-    trimSpace(&name);
-
-    printf("Name [%d] -> [%s]\n", strlen(name), name);
+   free_list(list);
 
     return 0;
 }
