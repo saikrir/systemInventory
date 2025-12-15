@@ -19,7 +19,7 @@ void test_create_new_model()
     free(model);
 }
 
-int main(int argc, char const *argv[])
+int main_(int argc, char const *argv[])
 {
     // system_model_t *model = NULL;
 
